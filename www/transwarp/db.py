@@ -6,14 +6,18 @@ import functools
 import time
 import uuid
 import os
-import mysql.connector
+
+
 
 __author__ = 'KlausQiu'
 
+#定义日志文件
 logger = None
 
+#定义一个通过key可以得到value的字典
 class Dict(dict):
 	def __init__(self,names=(),values=(),**kw):
+		#注意使用super继承父类
 		super(Dict,self).__init__(**kw)
 		for k,v in zip(names,values):
 			self[k] = v
@@ -24,10 +28,11 @@ class Dict(dict):
 		except KeyError:
 			raise AttributeError(r"'Dict' object has no attribute '%s'"%key)
 
-		def __setattr__(self, key, value):
+	def __setattr__(self, key, value):
 			self[key] = value
 
 def next_id(t=None):
+	#返回唯一ID值。
 	if t is None:
 		t = time.time()
 	return '%015d%s' %(int(t * 1000),uuid.uuid4().hex)
@@ -53,6 +58,7 @@ def _logger():
 	fh.setFormatter(format)
 	fh.setLevel(logging.DEBUG)
 	logger.addHandler(fh)
+	logger.info('[CREATE DB.log]')
 
 class DBError(Exception):
 	pass
@@ -96,7 +102,7 @@ class _DbCtx(threading.local):
 
 	def init(self):
 		global logger
-		logger.info('open lazy connection...')
+		logging.info('open lazy connection...')
 		self.connection = _LasyConnection()
 		self.transactions = 0
 
