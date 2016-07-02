@@ -9,6 +9,11 @@ config = dict(user = 'root',
 			  port = '3306')
 
 db._logger()
-db.create_engine(**config)
-user = db.select('select * from USER ',True)
-print user
+db.logger.info('start')
+
+
+def insert(table,**kw):
+	cls,v = zip(*kw.iteritems())
+	print cls,v
+
+insert('user',name = 'Test',email = 'test@example.com',password = 'password',image = 'about:blank')
